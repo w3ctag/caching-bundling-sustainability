@@ -40,11 +40,18 @@ var respecConfig = {
 
 <section id="abstract">
 
-This finding examines the sustainability of bundling and double-keyed caching in web development.
-Bundling dependencies into a single file can improve efficiency, but it results in repeated downloads of resources, negatively impacting end-user experience.
-Double-keyed caching partitions the cache by origin, increasing storage, energy consumption, and bandwidth.
-The finding suggests experimenting with smart delays for cache fetches and bundling with delta transport as potential solutions.
-The finding highlights the need for awareness of the hidden costs and sustainability risks and the benefits of reusing client-side resources.
+This finding examines the sustainability of bundling
+and double-keyed caching in web development.
+Bundling dependencies into a single file can improve efficiency,
+but it results in repeated downloads of resources,
+negatively impacting end-user experience.
+Double-keyed caching partitions the cache by origin,
+increasing storage, energy consumption, and bandwidth.
+The finding suggests experimenting with smart delays
+for cache fetches and bundling with delta transport as potential solutions.
+The finding highlights the need for awareness
+of the hidden costs and sustainability risks
+and the benefits of reusing client-side resources.
 
 </section>
 
@@ -54,46 +61,94 @@ This document is an early draft and does not reflect the consensus of the TAG.
 
 ## Introduction
 
-Improvements in both performance and efficiency of modern computers, combined with tremendous advances in optimizations within web browsers have made it possible to run large web applications while providing a near-native user experience and performance.
-This allowed developers to largely move towards a development pattern that utilizes many small packages.
+Improvements in both the performance and efficiency of modern computers,
+combined with tremendous advances in optimizations
+within web browsers have made it possible to run
+large web applications while providing
+a near-native user experience and performance.
+This allowed developers to essentially move towards
+a development pattern that enables code re-use from many small packages.
 
-The downside of the agility gained by this pattern is that when this practice was first introduced, transporting many small files was not efficient, and modules were not readily available.
-Bundling all of these dependencies into a single file and compressing it became a common practice for both transport efficiency and easier dependency management, analogous to static linking in native development. The unfortunate side effect of this is that this results in the user having to download duplicate code, as the browser is unable to determine if a given bundle contains a certain library.
+The downside of the agility gained by this pattern is that
+when this practice was first introduced,
+transporting many small files was not efficient,
+and modules were not readily available.
+Bundling all of these dependencies into a single file
+and compressing it became a common practice
+for both transport efficiency and easier dependency management,
+analogous to static linking in native development.
+The unfortunate side effect of this practice is that
+it results in the user having to download duplicate code,
+as the browser is unable to determine
+if a given bundle contains a specific library.
 
-Additionally, security research has unearthed the potential of fingerprinting users through resource loading times;
-and the mitigation for that introduced a mechanism commonly known as double-keyed caching.
+Additionally, security research has unearthed the potential of
+fingerprinting users through resource loading times;
+and the mitigation for that introduced a mechanism
+commonly known as double-keyed caching.
 This further amplifies the inefficiencies of transport.
 
-The end user impact is unnecessary repeated downloads of resources which can mean delay, energy consumption, storage bloat and data cost.
+The end-user impact is unnecessary repeated downloads of resources
+which can mean delay, energy consumption, storage bloat, and data cost.
 
 ## Transport Sustainability on the Web Platform
 
-We would like to increase wider community awareness of the hidden costs and sustainability risks introduced by bundling and double-keyed caching.
-Neither transport nor computation is free; these are costs that both the content provider and the user has to pay. Not only that, but there are parts of the world where transport is slower or costs more than others. Having to download chunks of code that are largely duplicated over and over is detrimental to end-user experience.
+We want to increase broader community awareness
+of the hidden costs and sustainability risks
+introduced by bundling and double-keyed caching.
+Neither transport nor computation is free;
+these are costs that both the content provider and the user ends up paying.
+Also, different user populations
+pay different comparative costs for transport.
+Having to download chunks of code that are largely duplicated
+repeatedly is detrimental to the end-user experience.
 
-A simple thought experiment would be to think about how many times jQuery has been downloaded since its introduction; and how much we could have saved users in data packet fees if there was some level of re-use on the client side.
+A simple thought experiment would be to think about
+how many times jQuery has been downloaded since its introduction;
+and how much we could have saved users in data packet fees
+if there was some level of re-use on the client side.
 
 ## Problems Introduced by Double-keyed Caching
 
-Double-keyed caching was introduced in 2020 to mitigate timing attacks that allowed malicious code to detect whether certain resources were cached.
-The solution that was chosen was to partition the cache by origin, and re-download resources even if they were already cached by a different origin. This meant that the longstanding practice of different websites sharing resources by linking to a CDN, was no longer effective. Furthermore, many developers are still unaware about double-keyed caching, and operate under the impression that loading a commonly requested resource from a CDN leads to performance improvements.
+Double-keyed caching was introduced in 2020 to mitigate timing attacks,
+allowing malicious code to detect whether certain resources were cached.
+The solution that was chosen was to partition the cache by origin,
+and re-download resources even if a different origin already cached them.
+This meant that the longstanding practice of different websites
+sharing resources by linking to a CDN, was no longer effective.
+Furthermore, many developers are still unaware of double-keyed caching,
+and operate under the impression that loading a commonly requested resource
+from a CDN leads to performance improvements.
 
-While double-keyed caching does solve the privacy vulnerability it was designed to address, the negative impact to users is quite substantial.
+While double-keyed caching does solve the privacy vulnerability
+it was designed to address the negative impact to users is quite substantial.
 Loading resources separately for each origin results in:
 - Additional storage space to store these cached resources.
-- Additional packages transferred over the wire, which in many scenarios can end up an actual financial burden for users.
-- Additional energy consumed, as extra CPU cycles for decoding, parsing, and executing resources.
+- Additional packages are transferred over the wire,
+  which, in many scenarios, can be an actual financial burden for users.
+- Additional energy is consumed as extra CPU cycles are used for decoding, parsing, and executing resources.
 - Additional bandwidth that servers need to pay.
 
 ## The Hidden Cost of Bundling
 
-Bundling lowers latency, and gives coherence of the whole package, but the hidden cost is the unused payload and the recurring cost of it during an update.
-There is also the inherent risk of “write amplification”, where even a single byte change in a web application requires downloading the entire application from scratch. There is a definite cost associated with this, both from the end of providing the application, as well as receiving the application.
+Bundling lowers latency and gives coherence to the whole package,
+but the hidden cost is the unused payload
+and the recurring cost of it during an update.
+There is also the inherent risk of “write amplification”,
+where even a single byte change in a web application requires
+downloading the entire application from scratch.
+There is a definite cost associated with this,
+both from the end of providing the application,
+as well as receiving the application.
 
 ## Closing Remarks
 
-Unfortunately, the solution to this is largely an unsolved problem and the web platform likely does not have all the bits and pieces needed to solve this problem.
-One idea that would be worth experimenting with is to re-use existing ideas such as introducing smart delays (e.g. within the standard deviance for the distribution) for cache fetches to mitigate user fingerprinting.
+Unfortunately, the solution to this is largely an unsolved problem
+and the web platform does not have all the machinery needed to solve this problem.
+One idea that would be worth experimenting with is
+to re-use existing ideas, such as introducing smart delays
+(e.g., within the standard deviance for the distribution)
+for cache fetches to mitigate user fingerprinting.
 
 TODO: (Mention bundling + delta transport here)
 
