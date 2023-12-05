@@ -110,7 +110,7 @@ if there was some level of re-use on the client side.
 
 ## Problems Introduced by Double-keyed Caching
 
-Double-keyed caching was introduced in 2020 to mitigate timing attacks,
+Double-keyed caching was [introduced in 2013](https://bugs.webkit.org/show_bug.cgi?id=110269) to mitigate timing attacks,
 allowing malicious code to detect whether certain resources were cached.
 The solution that was chosen was to partition the cache by origin,
 and re-download resources even if a different origin already cached them.
