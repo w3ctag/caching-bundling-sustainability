@@ -141,14 +141,28 @@ There is a definite cost associated with this,
 both from the end of providing the application,
 as well as receiving the application.
 
-## Closing Remarks
+## Angles for Experimentation
+
+We cannot compromise on the security and privacy guarantees that double keying provides.
+Additionally, no immediate replacements provide equivalent conveniences and functionality
+that bundling provides as of the time of writing.
+
+If we move the ecosystem to be unbundled, the cost of transport will go up.
+However, we cannot simply remove double keying to alleviate that cost.
+One potential angle for experimentation is to explore mechanisms to
+emulate the effects of double-keyed caching through a software layer
+but not necessarily trigger the wire transport.
+
+An oversimplified implementation of such a device that would be worth exploring
+is a noising layer on top of a single-keyed cache, which adds enough noise
+to prevent attacks that rely on timing (e.g., artificial delays)
+or metadata (e.g., adding noise in latent state).
+
+## Call to Action
 
 Unfortunately, the solution to this is largely an unsolved problem
-and the web platform does not have all the machinery needed to solve this problem.
-One idea that would be worth experimenting with is
-to re-use existing ideas, such as introducing smart delays
-(e.g., within the standard deviance for the distribution)
-for cache fetches to mitigate user fingerprinting.
-
-TODO: (Mention bundling + delta transport here)
-
+and the web platform may not have all the machinery needed to solve this problem.
+We would like to see experts from the community
+to experiment with different approaches to find a better solution
+and eventually propose a solution to reduce the costs
+while preserving the security and privacy guarantees we have today.
