@@ -28,10 +28,38 @@ var respecConfig = {
 	github: "w3ctag/caching-bundling-sustainability",
 	format: "markdown",
 	localBiblio: {
+		"COSI" : {
+			title: "Cross-Origin State Inference (COSI) Attacks: Leaking Web Site States through XS-Leaks",
+			href: "https://arxiv.org/pdf/1908.02204.pdf",
+			authors: [
+				"Avinash Sudhodanan",
+				"Soheil Khodayari",
+				"Juan Caballero",
+			],
+		},
 		"EWP" : {
 			title: "Ethical Web Principles",
 			href: "https://www.w3.org/2001/tag/doc/ethical-web-principles/",
 			publisher: "W3C",
+		},
+		"PARTITIONING" : {
+			title: "Client-Side Storage Partitioning",
+			href: "https://github.com/privacycg/storage-partitioning",
+			authors: [
+				"Anne van Kesteren",
+			],
+		},
+		"TIMING" : {
+			title: "Timing attacks on Web privacy",
+			href: "https://doi.org/10.1145/352600.352606",
+			authors: [
+				"Felten, E. W.",
+				"Schneider, M. A."
+			],
+		},
+		"XS-LEAKS" : {
+			title: "XS-Leaks Wiki",
+			href: "https://xsleaks.dev/",
 		},
 	},
 };
@@ -41,14 +69,15 @@ var respecConfig = {
 <section id="abstract">
 
 This finding examines the sustainability of bundling
-and double-keyed caching in web development.
+and storage partitioning in web development.
 Bundling dependencies into a single file can improve efficiency,
 but it results in repeated downloads of resources,
 negatively impacting end-user experience.
-Double-keyed caching partitions the cache by origin,
-increasing storage, energy consumption, and bandwidth.
+Partitioning client-side storage by origin
+benefits user privacy and security
+but increases storage, energy consumption, and bandwidth costs.
 The finding suggests experimenting with smart delays
-for cache fetches and bundling with delta transport as potential solutions.
+for cache fetches and bundling with delta transport as potential mitigations.
 The finding highlights the need for awareness
 of the hidden costs and sustainability risks
 and the benefits of reusing client-side resources.
@@ -82,20 +111,22 @@ it results in the user having to download duplicate code,
 as the browser is unable to determine
 if a given bundle contains a specific library.
 
-Additionally, security research has unearthed the potential of
-fingerprinting users [through resource loading times](https://github.com/w3c/webappsec-subresource-integrity/issues/22);
-and the mitigation for that introduced a mechanism
-commonly known as double-keyed caching.
-This further amplifies the inefficiencies of transport.
-
-The end-user impact is unnecessary repeated downloads of resources
-which can mean delay, energy consumption, storage bloat, and data cost.
+Additionally,
+various privacy and security issues identified with client-side storage mechanisms
+have been mitigated by the introduction of storage partitioning,
+also known as double-keying. [[PARTITIONING]] [[COSI]] [[TIMING]] [[XS-LEAKS]]
+While necessary,
+this has had the regrettable effect
+of amplifying transport inefficiencies.
+The repeated downloads of resources
+can mean delay, energy consumption, storage bloat, and data cost
+to the end user.
 
 ## Transport Sustainability on the Web Platform
 
 We want to increase broader community awareness
 of the hidden costs and sustainability risks
-introduced by bundling and double-keyed caching.
+introduced by bundling and storage partitioning.
 Neither transport nor computation is free;
 these are costs that both the content provider and the user ends up paying.
 Also, different user populations
@@ -108,26 +139,33 @@ how many times jQuery has been downloaded since its introduction;
 and how much we could have saved users in data packet fees
 if there was some level of re-use on the client side.
 
-## Problems Introduced by Double-keyed Caching
+## Benefits and Costs of Storage Partitioning
 
-Double-keyed caching was [introduced in 2013](https://bugs.webkit.org/show_bug.cgi?id=110269) to mitigate timing attacks,
-allowing malicious code to detect whether certain resources were cached.
-The solution that was chosen was to partition the cache by origin,
-and re-download resources even if a different origin already cached them.
-This meant that the longstanding practice of different websites
-sharing resources by linking to a CDN, was no longer effective.
-Furthermore, many developers are still unaware of double-keyed caching,
-and operate under the impression that loading a commonly requested resource
-from a CDN leads to performance improvements.
+The effort to partition all client-side storage mechanisms
+began [in 2013](https://bugs.webkit.org/show_bug.cgi?id=110269).
+There are two kinds of attacks that storage partitioning mitigates:
 
-While double-keyed caching does solve the privacy vulnerability
-it was designed to address the negative impact to users is quite substantial.
+1. Without storage partitioning,
+   Site A can infer that a user has visited Site B,
+   and can discover state from Site B specific to the user,
+   by embedding resources from Site B. [[COSI]] [[TIMING]] [[XS-LEAKS]]
+2. Without storage partitioning,
+   a site that provides a service to many other sites
+   by being embedded onto them
+   can track users across those sites. [[PARTITIONING]]
+
+Storage partitioning has been quite successful
+at addressing these attacks,
+but the tradeoffs made are considerable.
 Loading resources separately for each origin results in:
-- Additional storage space to store these cached resources.
+- Lessened benefit of different websites loading shared resources from
+  a <abbr title="Content Delivery Network">CDN</abbr>,
+  which is not well understood by developers.
+- Additional storage space is required to store these cached resources.
 - Additional packages are transferred over the wire,
   which, in many scenarios, can be an actual financial burden for users.
 - Additional energy is consumed as extra CPU cycles are used for decoding, parsing, and executing resources.
-- Additional bandwidth that servers need to pay.
+- Additional bandwidth used must be paid for by server operators.
 
 ## The Hidden Cost of Bundling
 
