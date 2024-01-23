@@ -131,7 +131,8 @@ Loading resources separately for each origin results in:
 
 ## The Hidden Cost of Bundling
 
-Bundling lowers latency and gives coherence to the whole package,
+Bundling lowers latency, lowers the transport cost by reducing the number of
+requests and makes the package atomic,
 but the hidden cost is the unused payload
 and the recurring cost of it during an update.
 There is also the inherent risk of “write amplification”,
@@ -140,6 +141,9 @@ downloading the entire application from scratch.
 There is a definite cost associated with this,
 both from the end of providing the application,
 as well as receiving the application.
+
+When HTTP/2 [[rfc9113]] was introduced, attempts were made to alleviate the need for bundling using Server Push, but the performance gain was not noticeable enough to justify the complexity cost.
+The introduction of HTTP/3 [[rfc9114]], based on QUIC [[rfc9100]] may provide new solutions to these issues.
 
 ## Closing Remarks
 
