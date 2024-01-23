@@ -132,7 +132,7 @@ Loading resources separately for each origin results in:
 ## The Hidden Cost of Bundling
 
 Bundling lowers latency, lowers the protocol cost by reducing the number of
-requests and gives coherence to the whole package,
+requests and makes the package atomic,
 but the hidden cost is the unused payload
 and the recurring cost of it during an update.
 There is also the inherent risk of “write amplification”,
