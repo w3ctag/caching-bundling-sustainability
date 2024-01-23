@@ -116,10 +116,10 @@ various privacy and security issues identified with client-side storage mechanis
 have been mitigated by the introduction of storage partitioning,
 also known as double-keying. [[PARTITIONING]] [[COSI]] [[TIMING]] [[XS-LEAKS]]
 While necessary,
-this has had the regrettable effect
-of amplifying transport inefficiencies.
+this has had the negative effect
+of increased transport costs.
 The repeated downloads of resources
-can mean delay, energy consumption, storage bloat, and data cost
+can mean increased delay, energy consumption, storage bloat, and data cost
 to the end user.
 
 ## Transport Sustainability on the Web Platform
@@ -165,7 +165,7 @@ Loading resources separately for each origin results in:
 - Additional packages are transferred over the wire,
   which, in many scenarios, can be an actual financial burden for users.
 - Additional energy is consumed as extra CPU cycles are used for decoding, parsing, and executing resources.
-- Additional bandwidth used must be paid for by server operators, users, and intermediaries.
+- Additional bandwidth used must be paid for by users, intermediaries, and content providers.
 
 ## The Hidden Cost of Bundling
 
